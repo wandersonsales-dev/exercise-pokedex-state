@@ -10,14 +10,17 @@ class Pokedex extends React.Component {
       "All", ...new Set(pokemons.map((pokemon) => pokemon.type)),
     ].sort();
 
+    this.typeSelected = 'Fire';
+
     this.state = {
-      pokemons: pokemons,
-      pokemonLength: pokemons.length,
+      typeSelected: this.typeSelected,
+      pokemons: pokemons.filter((pokemon) => pokemon.type === this.typeSelected),
+      pokemonLength: pokemons.filter((pokemon) => pokemon.type === this.typeSelected).length,
       currentIndex: 0,
     };
     
     this.nextPokemon = this.nextPokemon.bind(this);
-    console.log(this.typesOfPokemon);
+    this.handleChangeType = this.handleChangeType.bind(this);
   }
 
   nextPokemon() {
@@ -28,6 +31,16 @@ class Pokedex extends React.Component {
       return { ...previuosState, currentIndex: indexAtual };
     });
   }
+
+  handleChangeType(event) {
+    const { value } = event.target;
+    this.setState({
+      typeSelected: value,
+      pokemons: pokemons.filter((pokemon) => pokemon.type === value),
+      pokemonLength: pokemons.filter((pokemon) => pokemon.type === value).length,
+    });
+  }
+
   render() {
     return (
       <div className="pokedex">
@@ -35,7 +48,11 @@ class Pokedex extends React.Component {
           key={this.state.pokemons[this.state.currentIndex].id}
           pokemon={this.state.pokemons[this.state.currentIndex]}
         />
-        <button onClick={this.nextPokemon}> Next Pokemon</button>
+        <div className="buttons">
+          <button onClick={this.nextPokemon}> Next Pokemon</button>
+          <button onClick={this.handleChangeType} value="Fire">Fire</button>
+          <button onClick={this.handleChangeType} value="Psychic">Psychic</button>
+        </div>
       </div>
     );
   }
