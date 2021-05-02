@@ -1,6 +1,8 @@
 import React from "react";
 import pokemons from "./data";
 import Pokemon from "./Pokemon";
+import Button from './Button';
+import './Pokedex.css';
 
 class Pokedex extends React.Component {
   constructor() {
@@ -10,17 +12,18 @@ class Pokedex extends React.Component {
       "All", ...new Set(pokemons.map((pokemon) => pokemon.type)),
     ].sort();
 
-    this.typeSelected = 'Fire';
+    this.typeSelected = 'All';
 
     this.state = {
       typeSelected: this.typeSelected,
-      pokemons: pokemons.filter((pokemon) => pokemon.type === this.typeSelected),
-      pokemonLength: pokemons.filter((pokemon) => pokemon.type === this.typeSelected).length,
+      pokemons: this.typeSelected !== 'All' ? pokemons.filter((pokemon) => pokemon.type === this.typeSelected) : pokemons,
+      pokemonLength: this.typeSelected !== 'All' ? pokemons.filter((pokemon) => pokemon.type === this.typeSelected).length : pokemons.length,
       currentIndex: 0,
     };
     
     this.nextPokemon = this.nextPokemon.bind(this);
     this.handleChangeType = this.handleChangeType.bind(this);
+    this.checkButton = this.checkButton.bind(this);
   }
 
   nextPokemon() {
@@ -36,9 +39,21 @@ class Pokedex extends React.Component {
     const { value } = event.target;
     this.setState({
       typeSelected: value,
-      pokemons: pokemons.filter((pokemon) => pokemon.type === value),
-      pokemonLength: pokemons.filter((pokemon) => pokemon.type === value).length,
+      pokemons: value !== 'All' ? pokemons.filter((pokemon) => pokemon.type === value): pokemons,
+      pokemonLength: value !== 'All' ? pokemons.filter((pokemon) => pokemon.type === value).length: pokemons.length,
+      currentIndex: 0
     });
+  }
+
+  checkButton() {
+    const el = document.querySelector('.next button');
+    if(el){
+      if(this.state.pokemons.length <= 1) {
+        el.disabled = true;
+      } else {
+        el.disabled = false;
+      }
+    }
   }
 
   render() {
@@ -49,9 +64,22 @@ class Pokedex extends React.Component {
           pokemon={this.state.pokemons[this.state.currentIndex]}
         />
         <div className="buttons">
-          <button onClick={this.nextPokemon}> Next Pokemon</button>
-          <button onClick={this.handleChangeType} value="Fire">Fire</button>
-          <button onClick={this.handleChangeType} value="Psychic">Psychic</button>
+          {
+            this.typesOfPokemon.map((type, index) => 
+              <Button
+                key={index}
+                value={type}
+                handleChangeType={this.handleChangeType}
+              />)
+          }
+        </div>
+        <div className="next">
+          <button
+            onClick={this.nextPokemon}
+          >
+            {this.checkButton()}
+            Next Pokemon
+          </button>
         </div>
       </div>
     );
