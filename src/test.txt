@@ -1,0 +1,30 @@
+import React from 'react';
+import Pokedex from './Pokedex'
+import pokemons from './data'
+
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      pokemons: pokemons,
+      pokemonLength: pokemons.length,
+      currentIndex: 0
+    }
+  }
+  nextPokemon() {
+    this.setState({ currentIndex: currentIndex + 1})
+  }
+  render(){
+    return (
+     <div className="App">
+        <h1> Pokedex </h1>
+        <button onClick={this.nextPokemon}> Next Pokemon</button>
+       <Pokedex pokemons={pokemons[this.state.currentIndex]} />
+      </div>
+    );
+  }
+}
+export default App;
+
+
+teste github
